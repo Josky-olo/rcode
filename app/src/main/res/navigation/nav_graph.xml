@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/CameraScanRcodeFragment">
+
+    <fragment
+        android:id="@+id/CameraScanRcodeFragment"
+        android:name="bitflyday.com.mobile.application.rcode.presentation.CameraScanRcodeFragment"
+        android:label="@string/camera_scan_rcode_fragment_label"
+        tools:layout="@layout/fragment_camera_scan_rcode">
+
+        <action
+            android:id="@+id/action_CameraScanRCodeFragment_to_SecondFragment"
+            app:destination="@id/SecondFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/SecondFragment"
+        android:name="bitflyday.com.mobile.application.rcode.presentation.SecondFragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_second">
+
+        <action
+            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            app:destination="@id/CameraScanRcodeFragment" />
+    </fragment>
+</navigation>
