@@ -65,11 +65,11 @@ class CameraScanRcodeFragment : Fragment() {
 
     private fun bindPreview(cameraProvider: ProcessCameraProvider) {
         val preview: Preview = Preview.Builder().build()
-        val barcodeAnalysis = ImageAnalysis.Builder().build()
-            barcodeAnalysis.setAnalyzer(Executors.newSingleThreadExecutor(), BarcodeAnalyzer { barcode ->
+        val barcodeAnalysis = cameraExtender().also {
+            it.setAnalyzer(Executors.newSingleThreadExecutor(), BarcodeAnalyzer { barcode ->
                 Toast.makeText(requireContext(), barcode, Toast.LENGTH_SHORT).show()
             })
-
+        }
         val cameraSelector: CameraSelector = CameraSelector.Builder()
             .requireLensFacing(CameraSelector.LENS_FACING_BACK)
             .build()
@@ -77,6 +77,15 @@ class CameraScanRcodeFragment : Fragment() {
         camera?.let {
             preview.setSurfaceProvider(binding.previewView.surfaceProvider)
         }
+    }
+
+    @SuppressLint("UnsafeOptInUsageError")
+    private fun cameraExtender(): ImageAnalysis {
+        val builder = ImageAnalysis.Builder()
+        val camera2InterOp = Camera2Interop.Extender(builder)
+        camera2InterOp.setCaptureRequestOption(CaptureRequest.CONTROL_EFFECT_MODE, CameraMetadata.CONTROL_EFFECT_MODE_OFF)
+        camera2InterOp.setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_OFF)
+        return builder.build()
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
