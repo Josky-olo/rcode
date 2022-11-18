@@ -1,9 +1,12 @@
 package bitflyday.com.mobile.application.rcode.presentation
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.hardware.camera2.CameraMetadata
+import android.hardware.camera2.CaptureRequest
 import android.os.Bundle
 import android.util.Size
 import androidx.fragment.app.Fragment
@@ -11,17 +14,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.camera.camera2.interop.Camera2Interop
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import bitflyday.com.mobile.application.rcode.BarcodeAnalyzer
 import bitflyday.com.mobile.application.rcode.databinding.FragmentCameraScanRcodeBinding
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
+typealias BarcodeListener = (barcode: String) -> Unit
+
+@AndroidEntryPoint
 class CameraScanRcodeFragment : Fragment() {
 
     private var camera: Camera? = null
@@ -57,15 +65,15 @@ class CameraScanRcodeFragment : Fragment() {
 
     private fun bindPreview(cameraProvider: ProcessCameraProvider) {
         val preview: Preview = Preview.Builder().build()
-        val colorAnalysis = ImageAnalysis.Builder()
-            .setTargetResolution(Size(680, 680))
-            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-            .build()
+        val barcodeAnalysis = ImageAnalysis.Builder().build()
+            barcodeAnalysis.setAnalyzer(Executors.newSingleThreadExecutor(), BarcodeAnalyzer { barcode ->
+                Toast.makeText(requireContext(), barcode, Toast.LENGTH_SHORT).show()
+            })
 
         val cameraSelector: CameraSelector = CameraSelector.Builder()
             .requireLensFacing(CameraSelector.LENS_FACING_BACK)
             .build()
-        camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview,colorAnalysis)
+        camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, barcodeAnalysis)
         camera?.let {
             preview.setSurfaceProvider(binding.previewView.surfaceProvider)
         }
@@ -76,7 +84,6 @@ class CameraScanRcodeFragment : Fragment() {
             requireContext(), it
         ) == PackageManager.PERMISSION_GRANTED
     }
-
 
     companion object {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
