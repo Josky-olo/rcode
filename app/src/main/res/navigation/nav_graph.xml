@@ -13,16 +13,18 @@
 
         <action
             android:id="@+id/action_CameraScanRCodeFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            app:destination="@id/RcodeResultFragment" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="bitflyday.com.mobile.application.rcode.presentation.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
-
+        android:id="@+id/RcodeResultFragment"
+        android:name="bitflyday.com.mobile.application.rcode.presentation.RcodeResultFragment"
+        android:label="@string/rcode_result_fragment_label"
+        tools:layout="@layout/fragment_rcode_result">
+        <argument
+            android:name="barcode"
+            app:argType="string" />
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            android:id="@+id/action_RcodeResultFragment_to_FirstFragment"
             app:destination="@id/CameraScanRcodeFragment" />
     </fragment>
 </navigation>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.SecondFragment">
+    tools:context=".presentation.RcodeResultFragment">
 
     <TextView
         android:id="@+id/textview_second"
@@ -24,4 +24,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textview_second" />
+
+    <TextView
+        android:id="@+id/tvBarcode"
+        android:layout_width="374dp"
+        android:layout_height="251dp"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="29dp"
+        tools:layout_editor_absoluteY="29dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

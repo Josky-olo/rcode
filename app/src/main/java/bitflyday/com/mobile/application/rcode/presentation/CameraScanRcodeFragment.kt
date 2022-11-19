@@ -21,7 +21,9 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import bitflyday.com.mobile.application.rcode.BarcodeAnalyzer
+import bitflyday.com.mobile.application.rcode.R
 import bitflyday.com.mobile.application.rcode.databinding.FragmentCameraScanRcodeBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.Executor
@@ -68,6 +70,12 @@ class CameraScanRcodeFragment : Fragment() {
         val barcodeAnalysis = cameraExtender().also {
             it.setAnalyzer(Executors.newSingleThreadExecutor(), BarcodeAnalyzer { barcode ->
                 Toast.makeText(requireContext(), barcode, Toast.LENGTH_SHORT).show()
+                if(findNavController().currentDestination?.id==R.id.CameraScanRcodeFragment){
+                    this.findNavController().navigate(
+                        CameraScanRcodeFragmentDirections
+                            .actionCameraScanRCodeFragmentToSecondFragment(barcode)
+                    )
+                }
             })
         }
         val cameraSelector: CameraSelector = CameraSelector.Builder()

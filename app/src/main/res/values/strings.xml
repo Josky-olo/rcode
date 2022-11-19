@@ -3,7 +3,7 @@
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="camera_scan_rcode_fragment_label">Scan Rcode</string>
-    <string name="second_fragment_label">Second Fragment</string>
+    <string name="rcode_result_fragment_label">Result</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
