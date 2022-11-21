@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface BarcodeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertBarcode(barcode: Barcode):Long
+    suspend fun insertBarcode(barcode: Barcode): Long
 
     @Query("SELECT * FROM barcode")
-    fun getAllBarcode(): List<Barcode>
+    fun getAllBarcode(): Flow<List<Barcode>>
 }
 

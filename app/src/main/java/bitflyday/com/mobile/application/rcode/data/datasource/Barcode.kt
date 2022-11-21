@@ -7,6 +7,6 @@ import androidx.room.PrimaryKey
 data class Barcode(
     @PrimaryKey(autoGenerate = true)
     val barcodeId: Long = 0,
-    val barcodeText: String ="",
+    var barcodeText: String ="",
     val eventTime: Long = System.currentTimeMillis()
 )

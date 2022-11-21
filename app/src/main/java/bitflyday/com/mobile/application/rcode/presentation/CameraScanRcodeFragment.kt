@@ -69,12 +69,12 @@ class CameraScanRcodeFragment : Fragment() {
         val preview: Preview = Preview.Builder().build()
         val barcodeAnalysis = cameraExtender().also {
             it.setAnalyzer(Executors.newSingleThreadExecutor(), BarcodeAnalyzer { barcode ->
-                Toast.makeText(requireContext(), barcode, Toast.LENGTH_SHORT).show()
                 if(findNavController().currentDestination?.id==R.id.CameraScanRcodeFragment){
                     this.findNavController().navigate(
                         CameraScanRcodeFragmentDirections
                             .actionCameraScanRCodeFragmentToSecondFragment(barcode)
                     )
+                    return@BarcodeAnalyzer
                 }
             })
         }

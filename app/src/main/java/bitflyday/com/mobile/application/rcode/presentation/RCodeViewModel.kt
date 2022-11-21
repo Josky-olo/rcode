@@ -3,30 +3,31 @@ package bitflyday.com.mobile.application.rcode.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bitflyday.com.mobile.application.rcode.data.datasource.Barcode
-import bitflyday.com.mobile.application.rcode.data.datasource.BarcodeDao
-import bitflyday.com.mobile.application.rcode.data.datasource.BarcodeRepository
 import bitflyday.com.mobile.application.rcode.domain.InsertBarcodeUseCase
 import bitflyday.com.mobile.application.rcode.domain.LoadAllBarcodeUseCase
+import bitflyday.com.mobile.application.rcode.result.data
+import bitflyday.com.mobile.application.rcode.util.WhileViewSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RCodeViewModel @Inject constructor(
     loadAllBarcodeUseCase: LoadAllBarcodeUseCase,
-    insertBarcodeUseCase: InsertBarcodeUseCase,
+    private val insertBarcodeUseCase: InsertBarcodeUseCase
 ) : ViewModel() {
 
-    val barcodeData: StateFlow<Any> = flow {
-        emit(loadAllBarcodeUseCase(Unit))
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, Barcode())
 
+    val getAllBarcode: StateFlow<List<Barcode>?> = loadAllBarcodeUseCase(Unit).map {
+        it.data
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    fun v() = viewModelScope.launch(Dispatchers.IO) {
-        insert
-    }
+    fun insertBarcodeData(barcode: Barcode):Flow<Long> = flow<Long> {
+        insertBarcodeUseCase(barcode)
+    }.stateIn(viewModelScope,SharingStarted.Lazily,0L)
+
+    fun insertV2(barcode: Barcode) = insertBarcodeData(barcode).map {
+        it
+    }.stateIn(viewModelScope,SharingStarted.Eagerly,0L)
 
 }
