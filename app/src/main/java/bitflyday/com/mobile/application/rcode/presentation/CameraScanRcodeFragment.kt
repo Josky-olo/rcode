@@ -2,18 +2,14 @@ package bitflyday.com.mobile.application.rcode.presentation
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.camera2.CameraMetadata
 import android.hardware.camera2.CaptureRequest
 import android.os.Bundle
-import android.util.Size
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.camera.camera2.interop.Camera2Interop
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -21,12 +17,15 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import bitflyday.com.mobile.application.rcode.BarcodeAnalyzer
 import bitflyday.com.mobile.application.rcode.R
+import bitflyday.com.mobile.application.rcode.data.datasource.Barcode
 import bitflyday.com.mobile.application.rcode.databinding.FragmentCameraScanRcodeBinding
+import bitflyday.com.mobile.application.rcode.util.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.concurrent.Executor
+import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
 typealias BarcodeListener = (barcode: String) -> Unit
@@ -37,6 +36,7 @@ class CameraScanRcodeFragment : Fragment() {
     private var camera: Camera? = null
     private var _binding: FragmentCameraScanRcodeBinding? = null
     private val binding get() = _binding!!
+    private val rCodeViewModel: RCodeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +53,26 @@ class CameraScanRcodeFragment : Fragment() {
         if (allPermissionsGranted()) {
             setupCameraProvider()
         } else {
-            requestPermissions(REQUIRED_PERMISSIONS,REQUEST_CODE_PERMISSIONS)
+            requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+        }
+        initObserver()
+    }
+
+    private fun initObserver() {
+        rCodeViewModel.activeBarcode.observe(viewLifecycleOwner) {
+            launchAndRepeatWithViewLifecycle {
+                launch {
+                    val barcodeData = Barcode()
+                    barcodeData.barcodeText = it
+                    rCodeViewModel.addBarcodeData(barcodeData).apply {
+                        if (findNavController().currentDestination?.id == R.id.CameraScanRcodeFragment) {
+                            findNavController().navigate(
+                                CameraScanRcodeFragmentDirections.actionCameraScanRCodeFragmentToRcodeResultFragment(this ?: 0)
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -65,17 +84,13 @@ class CameraScanRcodeFragment : Fragment() {
         }
     }
 
+
     private fun bindPreview(cameraProvider: ProcessCameraProvider) {
         val preview: Preview = Preview.Builder().build()
-        val barcodeAnalysis = cameraExtender().also {
+        val barcodeAnalysis = cameraExtender().also { it ->
             it.setAnalyzer(Executors.newSingleThreadExecutor(), BarcodeAnalyzer { barcode ->
-                if(findNavController().currentDestination?.id==R.id.CameraScanRcodeFragment){
-                    this.findNavController().navigate(
-                        CameraScanRcodeFragmentDirections
-                            .actionCameraScanRCodeFragmentToSecondFragment(barcode)
-                    )
-                    return@BarcodeAnalyzer
-                }
+                rCodeViewModel.setActiveBarcode(barcode)
+                return@BarcodeAnalyzer
             })
         }
         val cameraSelector: CameraSelector = CameraSelector.Builder()

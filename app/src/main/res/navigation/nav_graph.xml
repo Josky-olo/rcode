@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_camera_scan_rcode">
 
         <action
-            android:id="@+id/action_CameraScanRCodeFragment_to_SecondFragment"
+            android:id="@+id/action_CameraScanRCodeFragment_to_RcodeResultFragment"
             app:destination="@id/RcodeResultFragment" />
     </fragment>
     <fragment
@@ -21,10 +21,10 @@
         android:label="@string/rcode_result_fragment_label"
         tools:layout="@layout/fragment_rcode_result">
         <argument
-            android:name="barcode"
-            app:argType="string" />
+            android:name="barcodeId"
+            app:argType="long" />
         <action
-            android:id="@+id/action_RcodeResultFragment_to_FirstFragment"
+            android:id="@+id/action_RcodeResultFragment_to_CameraScanRcodeFragment"
             app:destination="@id/CameraScanRcodeFragment" />
     </fragment>
 </navigation>

@@ -9,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import bitflyday.com.mobile.application.rcode.R
-import bitflyday.com.mobile.application.rcode.data.datasource.Barcode
 import bitflyday.com.mobile.application.rcode.databinding.FragmentRcodeResultBinding
 import bitflyday.com.mobile.application.rcode.util.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +25,7 @@ class RcodeResultFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-    private lateinit var barcode: String
+    private var barcodeId: Long = 0
     private val rCodeViewModel: RCodeViewModel by viewModels()
 
     override fun onCreateView(
@@ -34,7 +33,7 @@ class RcodeResultFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val safeArgs: RcodeResultFragmentArgs by navArgs()
-        barcode = safeArgs.barcode
+        barcodeId = safeArgs.barcodeId
         _binding = FragmentRcodeResultBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -44,34 +43,16 @@ class RcodeResultFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonSecond.setOnClickListener {
-            findNavController().navigate(R.id.action_RcodeResultFragment_to_FirstFragment)
+            findNavController().navigate(R.id.action_RcodeResultFragment_to_CameraScanRcodeFragment)
         }
-
-
-
 
         launchAndRepeatWithViewLifecycle {
-
             launch {
-                val barcodeData = Barcode()
-                barcodeData.barcodeText = barcode
-                rCodeViewModel.addBarcodeData(barcodeData).apply {
-                    binding.tvBarcode.text = this.toString()
-                }
-
-
-            }
-
-            launch {
-                rCodeViewModel.getAllBarcode.collect { it ->
-                    it?.forEach { barcode->
-                        println("barcode: $barcode")
-                    }
+                rCodeViewModel.getBarcodeById(barcodeId).collect { it ->
+                    binding.tvBarcode.text = it?.barcodeText
                 }
             }
         }
-
-
     }
 
     override fun onDestroyView() {
