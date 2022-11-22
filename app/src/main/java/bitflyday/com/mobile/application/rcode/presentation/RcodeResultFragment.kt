@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -14,9 +13,6 @@ import bitflyday.com.mobile.application.rcode.data.datasource.Barcode
 import bitflyday.com.mobile.application.rcode.databinding.FragmentRcodeResultBinding
 import bitflyday.com.mobile.application.rcode.util.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.observeOn
 import kotlinx.coroutines.launch
 
 /**
@@ -47,7 +43,6 @@ class RcodeResultFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.tvBarcode.text = barcode
         binding.buttonSecond.setOnClickListener {
             findNavController().navigate(R.id.action_RcodeResultFragment_to_FirstFragment)
         }
@@ -60,7 +55,11 @@ class RcodeResultFragment : Fragment() {
             launch {
                 val barcodeData = Barcode()
                 barcodeData.barcodeText = barcode
-                rCodeViewModel.insertV2(barcodeData).collect()
+                rCodeViewModel.addBarcodeData(barcodeData).apply {
+                    binding.tvBarcode.text = this.toString()
+                }
+
+
             }
 
             launch {

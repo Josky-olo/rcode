@@ -18,7 +18,7 @@ sealed class Result<out R> {
 }
 
 val Result<*>.succeeded
-    get() = this is Result.Success && data != null
+    get() = this is Success && data != null
 
 fun <T> Result<T>.successOr(fallback: T): T {
     return (this as? Success<T>)?.data ?: fallback
