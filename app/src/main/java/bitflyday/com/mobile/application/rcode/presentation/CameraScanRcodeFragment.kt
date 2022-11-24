@@ -11,10 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.camera.camera2.interop.Camera2Interop
-import androidx.camera.core.Camera
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.Preview
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -86,6 +83,7 @@ class CameraScanRcodeFragment : Fragment() {
 
 
     private fun bindPreview(cameraProvider: ProcessCameraProvider) {
+        cameraProvider.unbindAll()
         val preview: Preview = Preview.Builder().build()
         val barcodeAnalysis = cameraExtender().also { it ->
             it.setAnalyzer(Executors.newSingleThreadExecutor(), BarcodeAnalyzer { barcode ->
