@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -32,6 +33,7 @@ class RcodeResultFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        activity?.let { WindowCompat.setDecorFitsSystemWindows(it.window, true) }
         val safeArgs: RcodeResultFragmentArgs by navArgs()
         barcodeId = safeArgs.barcodeId
         _binding = FragmentRcodeResultBinding.inflate(inflater, container, false)
@@ -49,7 +51,7 @@ class RcodeResultFragment : Fragment() {
         launchAndRepeatWithViewLifecycle {
             launch {
                 rCodeViewModel.getBarcodeById(barcodeId).collect { it ->
-                    binding.tvBarcode.text = it?.barcodeText
+                    binding.tvBarcodeText.text = it?.barcodeText
                 }
             }
         }

@@ -14,6 +14,7 @@ import androidx.camera.camera2.interop.Camera2Interop
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import bitflyday.com.mobile.application.rcode.BarcodeAnalyzer
@@ -39,7 +40,7 @@ class CameraScanRcodeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        activity?.let { WindowCompat.setDecorFitsSystemWindows(it.window, false) }
         _binding = FragmentCameraScanRcodeBinding.inflate(inflater, container, false)
         return binding.root
 

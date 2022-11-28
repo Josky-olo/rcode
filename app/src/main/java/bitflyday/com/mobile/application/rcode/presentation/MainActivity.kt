@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+//        WindowCompat.setDecorFitsSystemWindows(window, false)
     }
 
     private fun hideSystemUI() {
