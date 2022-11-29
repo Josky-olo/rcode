@@ -20,15 +20,6 @@ class RCodeViewModel @Inject constructor(
     private val insertBarcodeUseCase: InsertBarcodeUseCase
 ) : ViewModel() {
 
-
-    private val _activeBarcode = MutableLiveData<String>()
-    val activeBarcode: LiveData<String>
-        get() = _activeBarcode
-    fun setActiveBarcode(_value: String) {
-        _activeBarcode.postValue(_value)
-    }
-
-
     fun getBarcodeById(barcodeId:Long):StateFlow<Barcode?> = loadBarcodeByIdUseCase(barcodeId).map {
         it.data
     }.stateIn(viewModelScope, SharingStarted.Eagerly, Barcode())

@@ -53,25 +53,6 @@ class CameraScanRcodeFragment : Fragment() {
         } else {
             requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
-        initObserver()
-    }
-
-    private fun initObserver() {
-        rCodeViewModel.activeBarcode.observe(viewLifecycleOwner) {
-            launchAndRepeatWithViewLifecycle {
-                launch {
-                    val barcodeData = Barcode()
-                    barcodeData.barcodeText = it
-                    rCodeViewModel.addBarcodeData(barcodeData).apply {
-                        if (findNavController().currentDestination?.id == R.id.CameraScanRcodeFragment) {
-                            findNavController().navigate(
-                                CameraScanRcodeFragmentDirections.actionCameraScanRCodeFragmentToRcodeResultFragment(this ?: 0)
-                            )
-                        }
-                    }
-                }
-            }
-        }
     }
 
     private fun setupCameraProvider() {
@@ -88,7 +69,19 @@ class CameraScanRcodeFragment : Fragment() {
         val preview: Preview = Preview.Builder().build()
         val barcodeAnalysis = cameraExtender().also { it ->
             it.setAnalyzer(Executors.newSingleThreadExecutor(), BarcodeAnalyzer { barcode ->
-                rCodeViewModel.setActiveBarcode(barcode)
+                launchAndRepeatWithViewLifecycle {
+                    launch {
+                        val barcodeData = Barcode()
+                        barcodeData.barcodeText = barcode
+                        rCodeViewModel.addBarcodeData(barcodeData).apply {
+                            if (findNavController().currentDestination?.id == R.id.CameraScanRcodeFragment) {
+                                findNavController().navigate(
+                                    CameraScanRcodeFragmentDirections.actionCameraScanRcodeFragmentToContentActivity()
+                                )
+                            }
+                        }
+                    }
+                }
                 return@BarcodeAnalyzer
             })
         }

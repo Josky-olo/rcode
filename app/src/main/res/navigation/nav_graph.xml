@@ -10,21 +10,14 @@
         android:name="bitflyday.com.mobile.application.rcode.presentation.CameraScanRcodeFragment"
         android:label="@string/camera_scan_rcode_fragment_label"
         tools:layout="@layout/fragment_camera_scan_rcode">
-
         <action
-            android:id="@+id/action_CameraScanRCodeFragment_to_RcodeResultFragment"
-            app:destination="@id/RcodeResultFragment" />
+            android:id="@+id/action_CameraScanRcodeFragment_to_contentActivity"
+            app:destination="@id/contentActivity"
+            app:popUpTo="@id/nav_graph" />
     </fragment>
-    <fragment
-        android:id="@+id/RcodeResultFragment"
-        android:name="bitflyday.com.mobile.application.rcode.presentation.RcodeResultFragment"
-        android:label="@string/rcode_result_fragment_label"
-        tools:layout="@layout/fragment_rcode_result">
-        <argument
-            android:name="barcodeId"
-            app:argType="long" />
-        <action
-            android:id="@+id/action_RcodeResultFragment_to_CameraScanRcodeFragment"
-            app:destination="@id/CameraScanRcodeFragment" />
-    </fragment>
+    <activity
+        android:id="@+id/contentActivity"
+        android:name="bitflyday.com.mobile.application.rcode.presentation.ContentActivity"
+        android:label="activity_content"
+        tools:layout="@layout/activity_content" />
 </navigation>

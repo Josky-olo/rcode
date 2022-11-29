@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import bitflyday.com.mobile.application.rcode.R
 import bitflyday.com.mobile.application.rcode.databinding.FragmentRcodeResultBinding
 import bitflyday.com.mobile.application.rcode.util.launchAndRepeatWithViewLifecycle
@@ -34,18 +33,15 @@ class RcodeResultFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         activity?.let { WindowCompat.setDecorFitsSystemWindows(it.window, true) }
-        val safeArgs: RcodeResultFragmentArgs by navArgs()
-        barcodeId = safeArgs.barcodeId
         _binding = FragmentRcodeResultBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonSecond.setOnClickListener {
-            findNavController().navigate(R.id.action_RcodeResultFragment_to_CameraScanRcodeFragment)
+            findNavController().navigate(R.id.action_rcodeResultFragment_to_mainActivity)
         }
 
         launchAndRepeatWithViewLifecycle {
